@@ -10,7 +10,7 @@ ${EXECUTABLE}: bin/tableflipper.o
 	${CC} $^ -o $@
 
 bin/tableflipper.o: src/tableflipper.c
-	@mkdir bin/
+	@mkdir -p bin/
 	${CC} $< ${CFLAGS} -o $@
 
 clean:
