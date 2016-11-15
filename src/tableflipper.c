@@ -25,50 +25,59 @@ void signal_handler();
 int buildFace(char**,char*,int);
 
 char run;
+struct options{
+	char * line;
+	char * rage;
+	char * calm;
+	int rageFace;
+	int calmFace;
+	struct winsize w;
+};
 
 int main(int argv, char ** argc){
 	signal(SIGINT,signal_handler);
 
-	char * line = NULL;
-	char * rage = NULL;
-	char * calm = NULL;
-	int rageFace = 6;
-	int calmFace = 3;
-	struct winsize w;
+	struct options opts;
+
+	opts.line= NULL;
+	opts.rage = NULL;
+	opts.calm = NULL;
+	opts.rageFace = 6;
+	opts.calmFace = 3;
 
 
 
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, w);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, opts.w);
 	run = 1;
 
-	if((line = (char*)malloc(w.ws_col)) == NULL)
+	if((opts.line = (char*)malloc(opts.w.ws_col)) == NULL)
 		return 1;
-	if(buildFace(&rage,ARM,rageFace) == -1)
+	if(buildFace(&opts.rage,ARM,opts.rageFace) == -1)
 		return 1;
-	if(buildFace(&calm,"  ",calmFace) == -1)
+	if(buildFace(&opts.calm,"  ",opts.calmFace) == -1)
 		return 1;
 
-	ioctl(0, TIOCGWINSZ, &w);
-	memset(line,' ',w.ws_col);
+	ioctl(0, TIOCGWINSZ, &opts.w);
+	memset(opts.line,' ',opts.w.ws_col);
 
 	int i;
 	i=0;
 	while(run){
-		printf("\r%s",line);
+		printf("\r%s",opts.line);
 		if(i%2==0)
-			printf("\r%s%s",calm,TABLE);
+			printf("\r%s%s",opts.calm,TABLE);
 		else
-			printf("\r%s%s%s",rage,THROW,FLIPPEDTABLE);
+			printf("\r%s%s%s",opts.rage,THROW,FLIPPEDTABLE);
 		fflush(stdout);
 		i++;
 		sleep(1);
 	}
-	free(line);
-	free(rage);
-	free(calm);
-	line = NULL;
-	rage = NULL;
-	calm = NULL;
+	free(opts.line);
+	free(opts.rage);
+	free(opts.calm);
+	opts.line = NULL;
+	opts.rage = NULL;
+	opts.calm = NULL;
 	return 0;
 }
 
