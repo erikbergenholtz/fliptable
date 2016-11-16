@@ -17,12 +17,14 @@
 #define MIN_FACE		1
 #define MAX_FACE		6
 
-#define UBERRAGE		"°益°"
-#define TOPRAGE			"◉Д◉"
-#define STARRAGE		"✧Д✧"
-#define RAGE			"°□°"
-#define CRAYZYLENNY		" ͡☉ ͜ʖ ͡☉"
-#define LENNY			" ͡° ͜ʖ ͡°"
+char * faces[] = {
+					" ͡° ͜ʖ ͡°",
+					" ͡☉ ͜ʖ ͡☉",
+					"°□°",
+					"✧Д✧",
+					"◉Д◉",
+					"°益°"
+				};
 
 
 struct options{
@@ -96,35 +98,14 @@ void signal_handler(){
 
 int buildFace(char** face, char* arms, int rage){
 	int len = 5;		// (ノ)ノ\0
-	char* tmpFace;
-	switch(rage){
-		case 1:
-			tmpFace = LENNY;
-			break;
-		case 2:
-			tmpFace = CRAYZYLENNY;
-			break;
-		case 3:
-			tmpFace = RAGE;
-			break;
-		case 4:
-			tmpFace = STARRAGE;
-			break;
-		case 5:
-			tmpFace = TOPRAGE;
-			break;
-		case 6:
-			tmpFace = UBERRAGE;
-			break;
-	}
-	len += strlen(tmpFace);
+	len += strlen(faces[rage-1]);
 	len *= 2;
 
 	if((*face = (char*)malloc(len)) == NULL)
 		return -1;
 	strncpy(*face,"(",len);
 	strncat(*face,arms,len);
-	strncat(*face,tmpFace,len);
+	strncat(*face,faces[rage-1],len);
 	strncat(*face,")",len);
 	strncat(*face,arms,len);
 	return 0;
