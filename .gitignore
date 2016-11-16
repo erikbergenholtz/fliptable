@@ -1,5 +1,6 @@
 #other
 *.swp
+tags
 
 # bin/directory
 bin/
