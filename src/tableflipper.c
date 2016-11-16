@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <signal.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -13,6 +14,9 @@
 #define THROW			"彡"
 #define ARM				"ノ"
 
+#define MIN_FACE		1
+#define MAX_FACE		6
+
 #define UBERRAGE		"°益°"
 #define TOPRAGE			"◉Д◉"
 #define STARRAGE		"✧Д✧"
@@ -21,10 +25,6 @@
 #define LENNY			" ͡° ͜ʖ ͡°"
 
 
-void signal_handler();
-int buildFace(char**,char*,int);
-
-char run;
 struct options{
 	char * line;
 	char * rage;
@@ -34,7 +34,14 @@ struct options{
 	struct winsize w;
 };
 
-int main(int argv, char ** argc){
+char run;
+
+void signal_handler();
+int parseArgs(int,char**,struct options*);
+int buildFace(char**,char*,int);
+
+
+int main(int argc, char ** argv){
 	signal(SIGINT,signal_handler);
 
 	struct options opts;
@@ -45,7 +52,8 @@ int main(int argv, char ** argc){
 	opts.rageFace = 6;
 	opts.calmFace = 3;
 
-
+	if(parseArgs(argc,argv,&opts) == -1)
+		return 1;
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, opts.w);
 	run = 1;
@@ -119,5 +127,40 @@ int buildFace(char** face, char* arms, int rage){
 	strncat(*face,tmpFace,len);
 	strncat(*face,")",len);
 	strncat(*face,arms,len);
+	return 0;
+}
+
+int parseArgs(int argc, char ** argv, struct options* opts){
+	char c = 0;
+	int i = 0;
+	while((c = getopt(argc,argv,"r:c:")) != -1){
+		switch(c){
+			case 'r':
+				i = atoi(optarg);
+				if( MIN_FACE > i || i > MAX_FACE ){
+					fprintf(stderr,"Invalid argument to -r: %d\n",i);
+				}
+				opts->rageFace = i;
+				break;
+			case 'c':
+				i = atoi(optarg);
+				if( MIN_FACE > i || i > MAX_FACE ){
+					fprintf(stderr,"Invalid argument to -r: %d\n",i);
+				}
+				opts->calmFace = i;
+				break;
+			case '?':
+				if(optopt == 'c' || optopt == 'r'){
+					fprintf(stderr,"Option -%c requires an arugment\n",optopt);
+				}else if( isprint(optopt) ){
+					fprintf(stderr,"Unknown option -%c\n",optopt);
+				}else{
+					fprintf(stderr,"Unknow character '\\x%x'\n",c);
+				}
+				return -1;
+			default:
+				abort();
+		}
+	}
 	return 0;
 }
