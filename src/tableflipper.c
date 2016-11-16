@@ -31,6 +31,7 @@ struct options{
 	char * line;
 	char * rage;
 	char * calm;
+	char list;
 	int rageFace;
 	int calmFace;
 	struct winsize w;
@@ -38,9 +39,10 @@ struct options{
 
 char run;
 
-void signal_handler();
+void signal_handler(int);
 int parseArgs(int,char**,struct options*);
 int buildFace(char**,char*,int);
+void listFaces( void );
 
 
 int main(int argc, char ** argv){
@@ -54,20 +56,25 @@ int main(int argc, char ** argv){
 	opts.rageFace = 6;
 	opts.calmFace = 3;
 
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &opts.w);
+
 	if(parseArgs(argc,argv,&opts) == -1)
 		return 1;
 
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, opts.w);
-	run = 1;
+	if(opts.list){
+		listFaces();
+		return 0;
+	}
 
-	if((opts.line = (char*)malloc(opts.w.ws_col)) == NULL)
+	if((opts.line = (char*)malloc(opts.w.ws_col/sizeof(char))) == NULL)
 		return 1;
 	if(buildFace(&opts.rage,ARM,opts.rageFace) == -1)
 		return 1;
 	if(buildFace(&opts.calm,"  ",opts.calmFace) == -1)
 		return 1;
 
-	ioctl(0, TIOCGWINSZ, &opts.w);
+	run = 1;
+
 	memset(opts.line,' ',opts.w.ws_col);
 
 	int i;
@@ -91,7 +98,7 @@ int main(int argc, char ** argv){
 	return 0;
 }
 
-void signal_handler(){
+void signal_handler(int signo){
 	run=0;
 	printf("\r%s%s Respect the tables!\n",TABLE,RESPECT);
 }
@@ -101,7 +108,7 @@ int buildFace(char** face, char* arms, int rage){
 	len += strlen(faces[rage-1]);
 	len *= 2;
 
-	if((*face = (char*)malloc(len)) == NULL)
+	if((*face = (char*)malloc(len/sizeof(char))) == NULL)
 		return -1;
 	strncpy(*face,"(",len);
 	strncat(*face,arms,len);
@@ -111,11 +118,21 @@ int buildFace(char** face, char* arms, int rage){
 	return 0;
 }
 
+void listFaces( void ){
+	int i;
+	for(i = 1 ; i < MAX_FACE ; i++){
+		printf("%-5d%s\n",i,faces[i-1]);
+	}
+}
+
 int parseArgs(int argc, char ** argv, struct options* opts){
 	char c = 0;
 	int i = 0;
-	while((c = getopt(argc,argv,"r:c:")) != -1){
+	while((c = getopt(argc,argv,"lr:c:")) != -1){
 		switch(c){
+			case 'l':
+				opts->list = 1;
+				break;
 			case 'r':
 				i = atoi(optarg);
 				if( MIN_FACE > i || i > MAX_FACE ){
@@ -126,7 +143,7 @@ int parseArgs(int argc, char ** argv, struct options* opts){
 			case 'c':
 				i = atoi(optarg);
 				if( MIN_FACE > i || i > MAX_FACE ){
-					fprintf(stderr,"Invalid argument to -r: %d\n",i);
+					fprintf(stderr,"Invalid argument to -c: %d\n",i);
 				}
 				opts->calmFace = i;
 				break;
