@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS=
 
-EXECUTABLE=bin/tableflipper
+EXECUTABLE=bin/fliptable
 
 all: ${EXECUTABLE}
 
