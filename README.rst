@@ -12,13 +12,15 @@ Authors
 
 License
 =====
-GPLv3, See `LICENSE`_.
+GPLv3, See LICENSE_.
 
 
 About
 =====
 ``fliptable`` is a piece of software designed to do one thing: Show your rage
 by animating a table-flip through UTF-8.
+
+|demogif|
 
 Why?
 -----
@@ -54,5 +56,5 @@ Example usage
 
 
 
-
-:: _`LICENSE` : https://github.com/Psyberion/fliptable/blob/master/LICENSE
+.. |demogif| image:: http://i.imgur.com/ezFQ38H.gif
+.. _LICENSE : https://github.com/Psyberion/fliptable/blob/master/LICENSE
