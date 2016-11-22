@@ -1,9 +1,21 @@
 #other
 *.swp
+fliptable
 tags
 
-# bin/directory
-bin/
+# Autotools
+aclocal.m4
+autom4te.cache
+compile
+config.log
+config.status
+configure
+.deps
+depcomp
+install-sh
+Makefile
+Makefile.in
+missing
 
 # Object files
 *.o
