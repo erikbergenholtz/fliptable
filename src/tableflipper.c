@@ -66,8 +66,6 @@ int main(int argc, char ** argv){
 		return 0;
 	}
 
-	if((opts.line = (char*)malloc(opts.w.ws_col/sizeof(char))) == NULL)
-		return 1;
 	if(buildFace(&opts.rage,ARM,opts.rageFace) == -1)
 		return 1;
 	if(buildFace(&opts.calm,"  ",opts.calmFace) == -1)
@@ -75,11 +73,21 @@ int main(int argc, char ** argv){
 
 	run = 1;
 
-	memset(opts.line,' ',opts.w.ws_col);
-
 	int i;
 	i=0;
 	while(run){
+		int len = opts.w.ws_col;
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &opts.w);
+		if(opts.w.ws_col != len){
+			free(opts.line);
+			if((opts.line = (char*)malloc(opts.w.ws_col/sizeof(char))) == NULL){
+				free(opts.rage);
+				free(opts.calm);
+				return 1;
+			}
+			memset(opts.line,' ',opts.w.ws_col);
+			opts.line[opts.w.ws_col-1] = '\0';
+		}
 		printf("\r%s",opts.line);
 		if(i%2==0)
 			printf("\r%s%s",opts.calm,TABLE);
