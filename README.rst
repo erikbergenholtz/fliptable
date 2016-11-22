@@ -12,7 +12,7 @@ Authors
 
 License
 =====
-GPLv3, See LICENSE_.
+WTFPL, See LICENSE_.
 
 
 About
