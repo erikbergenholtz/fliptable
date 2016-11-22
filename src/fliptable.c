@@ -56,8 +56,6 @@ int main(int argc, char ** argv){
 	opts.rageFace = 6;
 	opts.calmFace = 3;
 
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &opts.w);
-
 	if(parseArgs(argc,argv,&opts) == -1)
 		return 1;
 
