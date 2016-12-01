@@ -17,7 +17,7 @@
 #define MIN_FACE		1
 #define MAX_FACE		6
 
-char ** faces = {
+char * faces[] = {
 					" ͡° ͜ʖ ͡°",
 					" ͡☉ ͜ʖ ͡☉",
 					"°□°",
