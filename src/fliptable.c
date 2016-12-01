@@ -17,7 +17,7 @@
 #define MIN_FACE		1
 #define MAX_FACE		6
 
-char * faces[] = {
+char ** faces = {
 					" ͡° ͜ʖ ͡°",
 					" ͡☉ ͜ʖ ͡☉",
 					"°□°",
@@ -143,6 +143,7 @@ int parseArgs(int argc, char ** argv, struct options* opts){
 				i = atoi(optarg);
 				if( MIN_FACE > i || i > MAX_FACE ){
 					fprintf(stderr,"Invalid argument to -r: %d\n",i);
+					return -1;
 				}
 				opts->rageFace = i;
 				break;
@@ -150,6 +151,7 @@ int parseArgs(int argc, char ** argv, struct options* opts){
 				i = atoi(optarg);
 				if( MIN_FACE > i || i > MAX_FACE ){
 					fprintf(stderr,"Invalid argument to -c: %d\n",i);
+					return -1;
 				}
 				opts->calmFace = i;
 				break;
